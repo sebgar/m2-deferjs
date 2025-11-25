@@ -13,6 +13,8 @@ class BeforeSendResponse implements ObserverInterface
     protected $_appState;
     protected $_scopeConfig;
 
+    const EXCLUDE_FLAG = 'data-defer="false"';
+
     public function __construct(
         ConfigHelper $configHelper,
         AppState $appState,
@@ -35,6 +37,10 @@ class BeforeSendResponse implements ObserverInterface
 
                 $patterns = $this->_getPatterns();
                 foreach ($matches[0] as $i => $js) {
+                    if (strpos($js, self::EXCLUDE_FLAG) !== false) {
+                        continue;
+                    }
+
                     $jsDefer = '<script defer="defer" '.$matches[1][$i].'>';
 
                     $foundPattern = false;
